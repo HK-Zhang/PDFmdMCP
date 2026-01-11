@@ -3,54 +3,14 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import * as fs from "node:fs/promises";
-import { createCanvas } from "canvas";
 import { z } from "zod";
-import * as pdfjsLib from "pdfjs-dist";
+import { convertPdfPageToImage } from "./pdfConverter.js";
 
 interface QwenVLResponse {
   output?: {
     text?: string;
   };
   message?: string;
-}
-
-/**
- * Convert a PDF page to a PNG image buffer
- */
-async function convertPdfPageToImage(
-  pdfPath: string,
-  pageNumber: number
-): Promise<Buffer> {
-  const pdfData = await fs.readFile(pdfPath);
-  const loadingTask = pdfjsLib.getDocument({
-    data: new Uint8Array(pdfData),
-    useWorkerFetch: false,
-    isEvalSupported: false,
-    useSystemFonts: true,
-  });
-  const pdfDocument = await loadingTask.promise;
-
-  if (pageNumber < 1 || pageNumber > pdfDocument.numPages) {
-    throw new Error(
-      `Invalid page number. PDF has ${pdfDocument.numPages} pages.`
-    );
-  }
-
-  const page = await pdfDocument.getPage(pageNumber);
-  const viewport = page.getViewport({ scale: 2 });
-
-  const canvas = createCanvas(viewport.width, viewport.height);
-  const context = canvas.getContext("2d");
-
-  const renderContext = {
-    canvasContext: context as any,
-    viewport: viewport,
-    canvas: canvas as any,
-  };
-
-  await page.render(renderContext).promise;
-
-  return canvas.toBuffer("image/png");
 }
 
 /**

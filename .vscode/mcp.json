@@ -8,7 +8,8 @@
         "./dist/index.js"
       ],
       "env": {
-        "NODE_ENV": "development"
+        "QWEN_API_URL": "QWEN_API_URL",
+        "QWEN_API_KEY": "QWEN_API_KEY"
       }
     }
   }

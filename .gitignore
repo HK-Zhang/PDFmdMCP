@@ -4,3 +4,4 @@ dist/
 .env
 .DS_Store
 *.pdf
+test/output_page1.png

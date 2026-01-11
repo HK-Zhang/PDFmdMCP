@@ -24,6 +24,8 @@ The server requires two environment variables:
 - `QWEN_API_URL`: The endpoint URL for the Qwen VL API (e.g., `https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions`)
 - `QWEN_API_KEY`: Your API key for authentication
 
+By default, the server uses the `qwen-vl-max` model.
+
 ### MCP Settings Configuration
 
 Add this to your MCP client configuration (e.g., Claude Desktop config):
@@ -33,7 +35,7 @@ Add this to your MCP client configuration (e.g., Claude Desktop config):
   "mcpServers": {
     "pdf-to-markdown": {
       "command": "node",
-      "args": ["c:\\Users\\YXZHK\\source\\explore\\PDFmdMCP\\dist\\index.js"],
+      "args": ["/path/to/PDFmdMCP/dist/index.js"],
       "env": {
         "QWEN_API_URL": "https://your-qwen-api-endpoint.com/v1/chat/completions",
         "QWEN_API_KEY": "your-api-key-here"
@@ -42,6 +44,8 @@ Add this to your MCP client configuration (e.g., Claude Desktop config):
   }
 }
 ```
+
+*Note: Replace `/path/to/PDFmdMCP/dist/index.js` with the actual absolute path to the built `index.js` file on your system.*
 
 ## Available Tools
 
@@ -84,12 +88,23 @@ Convert page 3 of /path/to/document.pdf to markdown
 # Install dependencies
 npm install
 
-# Watch mode for development
-npm run watch
-
-# Build for production
+# Build the project
 npm run build
+
+# Watch mode for development
+npm run dev
+
+# Run tests
+npm test
 ```
+
+## System Dependencies
+
+This project uses `node-canvas`, which may require additional system libraries for pdf rendering:
+
+- **Windows**: Should work out of the box with prebuilt binaries.
+- **macOS**: `brew install pkg-config cairo pango libpng jpeg giflib librsvg`
+- **Linux (Ubuntu/Debian)**: `sudo apt-get install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev`
 
 ## Error Handling
 
@@ -129,3 +144,5 @@ MIT
 **"Missing required environment variables"**: Verify `QWEN_API_URL` and `QWEN_API_KEY` are set in your MCP configuration
 
 **"Qwen API request failed"**: Check your API key validity and endpoint URL
+
+**Canvas context incompatibilities**: With `pdfjs-dist` v4/v5, several users report render-time failures in Node when using `node-canvas`, even with the "legacy" build. The error typically happens inside `CanvasGraphics.paintInlineImageXObject` / `paintImageXObject`. Pinning to `pdfjs-dist@4.8.69` has been confirmed as a temporary workaround and is used in this project.

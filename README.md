@@ -1,5 +1,10 @@
 # PDF to Markdown MCP Server
 
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
+[![MCP](https://img.shields.io/badge/MCP-1.25.2-purple.svg)](https://modelcontextprotocol.io/)
+
 A Model Context Protocol (MCP) server that converts PDF pages to markdown format using the Qwen VL vision model API.
 
 ## Features

@@ -1,0 +1,31 @@
+{
+  "name": "pdf-to-markdown-mcp",
+  "version": "1.0.0",
+  "description": "MCP server that converts PDF pages to markdown using Qwen VL model",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "prebuild": "npm audit --omit=dev --audit-level=moderate",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc --watch",
+    "test": "tsc && node dist/test/convertPdfPageToImage.test.js"
+  },
+  "keywords": [
+    "mcp",
+    "pdf",
+    "markdown",
+    "qwen"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.25.2",
+    "canvas": "^3.2.0",
+    "pdfjs-dist": "^4.8.69"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "servers": {
+    "pdf-to-markdown-mcp": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "--inspect=9329",
+        "./dist/index.js"
+      ],
+      "env": {
+        "QWEN_API_URL": "QWEN_API_URL",
+        "QWEN_API_KEY": "QWEN_API_KEY"
+      }
+    }
+  }
+}

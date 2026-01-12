@@ -1,6 +1,11 @@
 // Polyfill DOM APIs required by pdfjs-dist in Node.js environment
-import { createCanvas } from "canvas";
+import { createCanvas, Canvas } from "canvas";
 import * as fs from "node:fs/promises";
+
+// Polyfill Canvas for pdfjs-dist
+if (typeof globalThis !== "undefined") {
+  (globalThis as any).Canvas = Canvas;
+}
 
 // Lazy load pdfjs-dist
 let pdfjsLib: any = null;
@@ -47,10 +52,16 @@ export async function convertPdfPageToImage(
   const canvas = createCanvas(viewport.width, viewport.height);
   const context = canvas.getContext("2d");
 
+  // Set white background
+  context.fillStyle = "white";
+  context.fillRect(0, 0, canvas.width, canvas.height);
+
   const renderContext = {
     canvasContext: context as any,
     viewport: viewport,
     background: "white",
+    // Explicitly disable transparency-related operations
+    enableWebGL: false,
   };
 
   await page.render(renderContext).promise;

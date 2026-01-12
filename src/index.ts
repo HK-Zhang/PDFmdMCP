@@ -98,7 +98,7 @@ async function main() {
 
   const server = new McpServer({
     name: "pdf-to-markdown-mcp",
-    version: "1.0.0",
+    version: "1.0.1",
   });
 
   // Register tool

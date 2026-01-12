@@ -10,7 +10,7 @@ async function testConvertPdfPageToImage() {
   
   console.log("Test 1: Convert valid PDF page to image");
   try {
-    const imageBuffer = await convertPdfPageToImage(testPdfPath, 1);
+    const imageBuffer = await convertPdfPageToImage(testPdfPath, 79);
     
     if (!Buffer.isBuffer(imageBuffer)) {
       throw new Error("Expected Buffer but got: " + typeof imageBuffer);

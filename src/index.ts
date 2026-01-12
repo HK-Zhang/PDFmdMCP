@@ -7,6 +7,11 @@ import { z } from "zod";
 import { convertPdfPageToImage } from "./pdfConverter.js";
 
 interface QwenVLResponse {
+  choices?: Array<{
+    message?: {
+      content?: string;
+    };
+  }>;
   output?: {
     text?: string;
   };
@@ -19,27 +24,30 @@ interface QwenVLResponse {
 async function convertImageToMarkdown(
   imageBuffer: Buffer,
   apiUrl: string,
-  apiKey: string
+  apiKey: string,
+  modelName: string
 ): Promise<string> {
   const base64Image = imageBuffer.toString("base64");
 
   const requestBody = {
-    model: "qwen-vl-max",
-    input: {
-      messages: [
-        {
-          role: "user",
-          content: [
-            {
-              image: `data:image/png;base64,${base64Image}`,
+    model: modelName,
+    messages: [
+      {
+        role: "user",
+        content: [
+          {
+            type: "image_url",
+            image_url: {
+              url: `data:image/png;base64,${base64Image}`,
             },
-            {
-              text: "Please convert this image to markdown format. Extract all text, tables, and structure accurately.",
-            },
-          ],
-        },
-      ],
-    },
+          },
+          {
+            type: "text",
+            text: "Please convert this image to markdown format. Extract all text, tables, and structure accurately.",
+          },
+        ],
+      },
+    ],
   };
 
   const response = await fetch(apiUrl, {
@@ -54,11 +62,16 @@ async function convertImageToMarkdown(
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error(
-      `Qwen API request failed: ${response.status} ${response.statusText} - ${errorText}`
+      `API request failed: ${response.status} ${response.statusText} - ${errorText}`
     );
   }
 
   const result = (await response.json()) as QwenVLResponse;
+
+  // Support both OpenAI format and Qwen format
+  if (result.choices?.[0]?.message?.content) {
+    return result.choices[0].message.content;
+  }
 
   if (result.output?.text) {
     return result.output.text;
@@ -75,6 +88,7 @@ async function convertImageToMarkdown(
 async function main() {
   const apiUrl = process.env.QWEN_API_URL;
   const apiKey = process.env.QWEN_API_KEY;
+  const modelName = process.env.QWEN_MODEL || "Qwen3-VL-235B-A22B-Instruct";
 
   if (!apiUrl || !apiKey) {
     throw new Error(
@@ -84,7 +98,7 @@ async function main() {
 
   const server = new McpServer({
     name: "pdf-to-markdown-mcp",
-    version: "1.0.0",
+    version: "1.0.1",
   });
 
   // Register tool
@@ -132,7 +146,8 @@ async function main() {
         const markdown = await convertImageToMarkdown(
           imageBuffer,
           apiUrl,
-          apiKey
+          apiKey,
+          modelName
         );
 
         return {

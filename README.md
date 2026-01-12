@@ -1,5 +1,10 @@
 # PDF to Markdown MCP Server
 
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
+[![MCP](https://img.shields.io/badge/MCP-1.25.2-purple.svg)](https://modelcontextprotocol.io/)
+
 A Model Context Protocol (MCP) server that converts PDF pages to markdown format using the Qwen VL vision model API.
 
 ## Features
@@ -94,9 +99,53 @@ npm run build
 # Watch mode for development
 npm run dev
 
-# Run tests
+# Run basic tests (PDF to image conversion - no API required)
+npm test
+
+# Run full tests (includes API calls - requires credentials)
+npm run test:full
+
+# Run all tests
+npm run test:all
+
+# Run interactive demo
+npm run demo
+```
+
+## Testing
+
+The project includes comprehensive tests for both PDF conversion and markdown extraction:
+
+### Basic Tests (No API Required)
+```bash
 npm test
 ```
+Tests:
+- ✅ PDF page to PNG image conversion
+- ✅ Invalid page number handling
+- ✅ Non-existent file handling
+
+### Full Integration Tests (API Required)
+```bash
+# Set environment variables first
+$env:QWEN_API_URL = "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation"
+$env:QWEN_API_KEY = "your-api-key-here"
+
+# Run full test suite
+npm run test:full
+```
+Tests:
+- ✅ Complete PDF to markdown pipeline
+- ✅ API integration
+- ✅ Output validation
+
+### Interactive Demo
+```bash
+npm run demo                           # Convert test.pdf page 1
+npm run demo path/to/file.pdf 2        # Convert specific file and page
+```
+
+See [TESTING.md](TESTING.md) for detailed testing documentation.
 
 ## System Dependencies
 

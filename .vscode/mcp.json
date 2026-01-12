@@ -5,11 +5,12 @@
       "command": "node",
       "args": [
         "--inspect=9329",
-        "./dist/index.js"
+        "./dist/src/index.js"
       ],
       "env": {
-        "QWEN_API_URL": "QWEN_API_URL",
-        "QWEN_API_KEY": "QWEN_API_KEY"
+        "QWEN_API_URL": "http://osl4420:13000/v1/chat/completions",
+        "QWEN_API_KEY": "sk-",
+        "QWEN_MODEL": "Qwen3-VL-235B-A22B-Instruct"
       }
     }
   }

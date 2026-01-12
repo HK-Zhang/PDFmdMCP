@@ -96,9 +96,10 @@ async function main() {
     );
   }
 
+  const se = "1.0.4";
   const server = new McpServer({
     name: "pdf-to-markdown-mcp",
-    version: "1.0.3",
+    version: se,
   });
 
   // Register tool
@@ -178,7 +179,7 @@ async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
 
-  console.error("PDF to Markdown MCP server running on stdio");
+  console.error(`PDF to Markdown MCP server (v${se}) running on stdio`);
 }
 
 try {

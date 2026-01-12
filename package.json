@@ -1,6 +1,6 @@
 {
   "name": "pdf-to-markdown-mcp",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "MCP server that converts PDF pages to markdown using Qwen VL model",
   "type": "module",
   "main": "dist/src/index.js",

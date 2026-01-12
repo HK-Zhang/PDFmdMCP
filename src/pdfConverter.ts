@@ -1,10 +1,14 @@
 // Polyfill DOM APIs required by pdfjs-dist in Node.js environment
-import { createCanvas, Canvas } from "canvas";
+import { createCanvas, Canvas, Image } from "canvas";
 import * as fs from "node:fs/promises";
 
 // Polyfill Canvas for pdfjs-dist
 if (typeof globalThis !== "undefined") {
   (globalThis as any).Canvas = Canvas;
+  (globalThis as any).Image = Image;
+  // Disable OffscreenCanvas to force pdfjs-dist to use the node-canvas polyfill
+  // This prevents "TypeError: Image or Canvas expected" errors when drawing
+  delete (globalThis as any).OffscreenCanvas;
 }
 
 // Lazy load pdfjs-dist

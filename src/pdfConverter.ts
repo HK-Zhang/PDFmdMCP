@@ -42,7 +42,7 @@ export async function convertPdfPageToImage(
   }
 
   const page = await pdfDocument.getPage(pageNumber);
-  const viewport = page.getViewport({ scale: 2 });
+  const viewport = page.getViewport({ scale: 1 });
 
   const canvas = createCanvas(viewport.width, viewport.height);
   const context = canvas.getContext("2d");

@@ -1,14 +1,14 @@
-import { convertPdfPageToImage } from "../src/index.js";
+import { convertPdfPageToImage } from "../dist/src/pdfConverter.js";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 /**
  * Test for convertPdfPageToImage function
  */
 async function testConvertPdfPageToImage() {
-    const testPdfPath = path.join(process.cwd(), "test", "DNV_Annual_Report_2024.pdf");
+    const testPdfPath = path.join(process.cwd(), "test", "test.pdf");
     console.log("Test 1: Convert valid PDF page to image");
     try {
-        const imageBuffer = await convertPdfPageToImage(testPdfPath, 1);
+        const imageBuffer = await convertPdfPageToImage(testPdfPath, 79);
         if (!Buffer.isBuffer(imageBuffer)) {
             throw new Error("Expected Buffer but got: " + typeof imageBuffer);
         }
@@ -21,10 +21,10 @@ async function testConvertPdfPageToImage() {
         if (!actualSignature.equals(pngSignature)) {
             throw new Error("Generated buffer is not a valid PNG image");
         }
-        console.log("✓ Test 1 passed: Successfully converted page 1 to PNG image");
+        console.log("✓ Test 1 passed: Successfully converted page 79 to PNG image");
         console.log(`  Image size: ${imageBuffer.length} bytes`);
         // Optional: Save test output
-        const outputPath = path.join(process.cwd(), "test", "output_page1.png");
+        const outputPath = path.join(process.cwd(), "test", "output_page79.png");
         await fs.writeFile(outputPath, imageBuffer);
         console.log(`  Test image saved to: ${outputPath}`);
     }

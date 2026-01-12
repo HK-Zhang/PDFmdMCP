@@ -99,9 +99,53 @@ npm run build
 # Watch mode for development
 npm run dev
 
-# Run tests
+# Run basic tests (PDF to image conversion - no API required)
+npm test
+
+# Run full tests (includes API calls - requires credentials)
+npm run test:full
+
+# Run all tests
+npm run test:all
+
+# Run interactive demo
+npm run demo
+```
+
+## Testing
+
+The project includes comprehensive tests for both PDF conversion and markdown extraction:
+
+### Basic Tests (No API Required)
+```bash
 npm test
 ```
+Tests:
+- ✅ PDF page to PNG image conversion
+- ✅ Invalid page number handling
+- ✅ Non-existent file handling
+
+### Full Integration Tests (API Required)
+```bash
+# Set environment variables first
+$env:QWEN_API_URL = "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation"
+$env:QWEN_API_KEY = "your-api-key-here"
+
+# Run full test suite
+npm run test:full
+```
+Tests:
+- ✅ Complete PDF to markdown pipeline
+- ✅ API integration
+- ✅ Output validation
+
+### Interactive Demo
+```bash
+npm run demo                           # Convert test.pdf page 1
+npm run demo path/to/file.pdf 2        # Convert specific file and page
+```
+
+See [TESTING.md](TESTING.md) for detailed testing documentation.
 
 ## System Dependencies
 

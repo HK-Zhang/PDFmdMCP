@@ -17,6 +17,43 @@ async function getPdfjsLib() {
   return pdfjsLib;
 }
 
+class NodeCanvasFactory {
+  create(width: number, height: number) {
+    if (width <= 0 || height <= 0) {
+      throw new Error("Invalid canvas size");
+    }
+    const canvas = createCanvas(width, height);
+    const context = canvas.getContext("2d");
+    return {
+      canvas,
+      context,
+    };
+  }
+
+  reset(canvasAndContext: any, width: number, height: number) {
+    if (!canvasAndContext.canvas) {
+      throw new Error("Canvas is not specified");
+    }
+    if (width <= 0 || height <= 0) {
+      throw new Error("Invalid canvas size");
+    }
+    canvasAndContext.canvas.width = width;
+    canvasAndContext.canvas.height = height;
+  }
+
+  destroy(canvasAndContext: any) {
+    if (!canvasAndContext.canvas) {
+      throw new Error("Canvas is not specified");
+    }
+    // Zeroing the width and height cause Firefox to release graphics
+    // resources immediately, which can be important with complex documents.
+    canvasAndContext.canvas.width = 0;
+    canvasAndContext.canvas.height = 0;
+    canvasAndContext.canvas = null;
+    canvasAndContext.context = null;
+  }
+}
+
 /**
  * Convert a PDF page to a PNG image buffer
  * 
@@ -59,9 +96,8 @@ export async function convertPdfPageToImage(
   const renderContext = {
     canvasContext: context as any,
     viewport: viewport,
+    canvasFactory: new NodeCanvasFactory(),
     background: "white",
-    // Explicitly disable transparency-related operations
-    enableWebGL: false,
   };
 
   await page.render(renderContext).promise;

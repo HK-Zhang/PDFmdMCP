@@ -96,7 +96,7 @@ async function main() {
     );
   }
 
-  const se = "1.0.6";
+  const se = "1.0.7";
   const server = new McpServer({
     name: "pdf-to-markdown-mcp",
     version: se,

@@ -3,6 +3,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import * as fs from "node:fs/promises";
+import * as path from "node:path";
 import { z } from "zod";
 import { convertPdfPageToImage } from "./pdfConverter.js";
 
@@ -96,7 +97,7 @@ async function main() {
     );
   }
 
-  const se = "1.0.8";
+  const se = "1.0.9";
   const server = new McpServer({
     name: "pdf-to-markdown-mcp",
     version: se,
@@ -131,6 +132,23 @@ async function main() {
           !Number.isInteger(page_number)
         ) {
           throw new Error("page_number must be a positive integer");
+        }
+
+        // Validate pdf_path is within an allowed workspace directory
+        const workspaceEnv = process.env.WORKSPACE;
+        if (workspaceEnv) {
+          const allowedDirs = workspaceEnv
+            .split(",")
+            .map((d) => path.resolve(d.trim()));
+          const resolvedPdfPath = path.resolve(pdf_path);
+          const isAllowed = allowedDirs.some((dir) =>
+            resolvedPdfPath.startsWith(dir + path.sep) || resolvedPdfPath === dir
+          );
+          if (!isAllowed) {
+            throw new Error(
+              `Access denied: pdf_path must be located within one of the allowed workspace directories`
+            );
+          }
         }
 
         // Check if file exists

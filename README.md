@@ -3,7 +3,7 @@
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
-[![MCP](https://img.shields.io/badge/MCP-1.25.2-purple.svg)](https://modelcontextprotocol.io/)
+[![MCP](https://img.shields.io/badge/MCP-1.27.1-purple.svg)](https://modelcontextprotocol.io/)
 
 A Model Context Protocol (MCP) server that converts PDF pages to markdown format using the Qwen VL vision model.
 
@@ -28,7 +28,8 @@ npm run build
 The server needs the following environment variables:
 - `QWEN_API_URL`: The endpoint URL (e.g., `https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions`)
 - `QWEN_API_KEY`: Your authentication key.
-- `QWEN_MODEL`: The specific model name (defaults to `qwen-vl-max`).
+- `QWEN_MODEL`: The specific model name (defaults to `Qwen3-VL-235B-A22B-Instruct`).
+- `WORKSPACE` (optional): Comma-separated list of absolute directory paths. When set, the server will only process PDF files located within these directories, preventing access to files outside the allowed workspace.
 
 ### 3. Setup with Claude Desktop
 Add this to your Claude Desktop configuration file:
@@ -45,7 +46,7 @@ Add this to your Claude Desktop configuration file:
       "env": {
         "QWEN_API_URL": "https://your-qwen-api-endpoint.com/v1/chat/completions",
         "QWEN_API_KEY": "your-api-key-here",
-        "QWEN_MODEL": "qwen-vl-max"
+        "QWEN_MODEL": "Qwen3-VL-235B-A22B-Instruct"
       }
     }
   }

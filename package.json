@@ -12,7 +12,7 @@
     "build": "tsc",
     "start": "node dist/src/index.js",
     "dev": "tsc --watch",
-    "test": "tsc && node dist/test/convertPdfPageToImage.test.js",
+    "test": "tsc && node dist/test/convertPdfPageToImage.test.js && node dist/test/openaiCompatibleRequest.test.js",
     "test:full": "tsc && node dist/test/pdfToMarkdown.test.js",
     "test:all": "npm test && npm run test:full",
     "demo": "tsc && node dist/test/demo.js"
@@ -28,7 +28,9 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",
     "canvas": "3.2.0",
-    "pdfjs-dist": "4.8.69"
+    "dotenv": "^16.6.1",
+    "pdfjs-dist": "4.8.69",
+    "zod": "^3.25.76"
   },
   "overrides": {
     "hono":"4.12.5",

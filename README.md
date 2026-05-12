@@ -29,7 +29,10 @@ The server needs the following environment variables:
 - `QWEN_API_URL`: The endpoint URL (e.g., `https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions`)
 - `QWEN_API_KEY`: Your authentication key.
 - `QWEN_MODEL`: The specific model name (defaults to `Qwen3-VL-235B-A22B-Instruct`).
+- `VLLM_REASONING_PARSER` (optional): When you serve a reasoning model through vLLM and need thinking disabled, set this to `kimi_k2` for Kimi K2.x or `qwen3` for Qwen3. The server will send the matching `chat_template_kwargs` expected by vLLM.
 - `WORKSPACE` (optional): Comma-separated list of absolute directory paths. When set, the server will only process PDF files located within these directories, preventing access to files outside the allowed workspace.
+
+The runtime and test scripts automatically load a project-local `.env` file when one is present, so you can usually keep these values in `.env` instead of exporting them in your shell.
 
 ### 3. Setup with Claude Desktop
 Add this to your Claude Desktop configuration file:
@@ -47,6 +50,35 @@ Add this to your Claude Desktop configuration file:
         "QWEN_API_URL": "https://your-qwen-api-endpoint.com/v1/chat/completions",
         "QWEN_API_KEY": "your-api-key-here",
         "QWEN_MODEL": "Qwen3-VL-235B-A22B-Instruct"
+      }
+    }
+  }
+}
+```
+
+### vLLM reasoning models
+
+If your OpenAI-compatible endpoint is powered by vLLM and the served model defaults to thinking mode, configure the parser so the server can disable it correctly:
+
+- `VLLM_REASONING_PARSER=kimi_k2` sends `chat_template_kwargs: { "thinking": false }`
+- `VLLM_REASONING_PARSER=qwen3` sends `chat_template_kwargs: { "enable_thinking": false }`
+
+Example MCP configuration for Kimi K2.x through vLLM:
+
+```json
+{
+  "mcpServers": {
+    "pdf-to-markdown": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "pdf-to-markdown-mcp"
+      ],
+      "env": {
+        "QWEN_API_URL": "http://your-vllm-host:8000/v1/chat/completions",
+        "QWEN_API_KEY": "EMPTY",
+        "QWEN_MODEL": "moonshotai/Kimi-K2.6-Vision-Instruct",
+        "VLLM_REASONING_PARSER": "kimi_k2"
       }
     }
   }
@@ -77,7 +109,7 @@ Depending on your OS, you may need additional libraries for PDF rendering:
 ## Troubleshooting
 - **"PDF file not found"**: Ensure the path is absolute and the file is accessible.
 - **"Invalid page number"**: Check that the page number exists in the document.
-- **API Errors**: Verify your `QWEN_API_URL` and `QWEN_API_KEY`.
+- **API Errors**: Verify your `QWEN_API_URL` and `QWEN_API_KEY` in `.env` or your shell environment.
 - **Render Failures**: If conversion fails on Linux/macOS, ensure the **System Dependencies** above are installed.
 
 ## License

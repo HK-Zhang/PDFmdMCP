@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { convertPdfPageToImage } from "../src/pdfConverter.js";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
@@ -88,9 +89,9 @@ async function main() {
     console.error("\nPlease set environment variables:");
     console.error("  QWEN_API_URL - Qwen API endpoint URL");
     console.error("  QWEN_API_KEY - Your Qwen API key\n");
-    console.error("Windows (PowerShell):");
-    console.error('  $env:QWEN_API_URL = "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation"');
-    console.error('  $env:QWEN_API_KEY = "your-api-key-here"\n');
+    console.error(
+      "The project automatically loads a local .env file when present, so you can store the values there instead of exporting them every time.\n"
+    );
     process.exit(1);
   }
 

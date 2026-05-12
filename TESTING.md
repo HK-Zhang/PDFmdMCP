@@ -17,7 +17,7 @@ This will test:
 
 ### 2. Test Full PDF to Markdown Conversion (Requires API Keys)
 
-First, set up your Qwen API credentials:
+The test runner automatically loads a project-local `.env` file when one is present. If you prefer not to use `.env`, set up your Qwen API credentials manually:
 
 **Windows (PowerShell):**
 ```powershell

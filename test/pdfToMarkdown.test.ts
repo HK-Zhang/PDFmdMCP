@@ -1,4 +1,6 @@
+import "dotenv/config";
 import { convertPdfPageToImage } from "../src/pdfConverter.js";
+import { buildOpenAICompatibleRequest } from "../src/openaiCompatibleRequest.js";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
@@ -20,30 +22,13 @@ interface QwenVLResponse {
 async function convertImageToMarkdown(
   imageBuffer: Buffer,
   apiUrl: string,
-  apiKey: string
+  apiKey: string,
+  modelName: string,
+  vllmReasoningParser?: string
 ): Promise<string> {
-  const base64Image = imageBuffer.toString("base64");
-
-  const requestBody = {
-    model: "Qwen3-VL-235B-A22B-Instruct",
-    messages: [
-      {
-        role: "user",
-        content: [
-          {
-            type: "image_url",
-            image_url: {
-              url: `data:image/png;base64,${base64Image}`,
-            },
-          },
-          {
-            type: "text",
-            text: "Please convert this image to markdown format. Extract all text, tables, and structure accurately.",
-          },
-        ],
-      },
-    ],
-  };
+  const requestBody = buildOpenAICompatibleRequest(imageBuffer, modelName, {
+    vllmReasoningParser,
+  });
 
   const response = await fetch(apiUrl, {
     method: "POST",
@@ -86,6 +71,8 @@ async function testPdfToMarkdown() {
   const testPdfPath = path.join(process.cwd(), "test", "test.pdf");
   const apiUrl = process.env.QWEN_API_URL;
   const apiKey = process.env.QWEN_API_KEY;
+  const modelName = process.env.QWEN_MODEL || "Qwen3-VL-235B-A22B-Instruct";
+  const vllmReasoningParser = process.env.VLLM_REASONING_PARSER;
 
   // Test 1: PDF to Image conversion
   console.log("Test 1: Convert PDF page to image");
@@ -124,14 +111,12 @@ async function testPdfToMarkdown() {
   // Test 2: Check API credentials
   console.log("\nTest 2: Verify API credentials");
   if (!apiUrl || !apiKey) {
-    console.log("⚠ Test 2 skipped: QWEN_API_URL and QWEN_API_KEY environment variables not set");
-    console.log("\nTo test full PDF to markdown conversion, set environment variables:");
-    console.log("  Windows (PowerShell):");
-    console.log('    $env:QWEN_API_URL = "http://osl4420:13000/v1/chat/completions"');
-    console.log('    $env:QWEN_API_KEY = "sk-*****"');
-    console.log("\n  Linux/Mac:");
-    console.log('    export QWEN_API_URL="https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation"');
-    console.log('    export QWEN_API_KEY="your-api-key-here"');
+    console.log(
+      "⚠ Test 2 skipped: QWEN_API_URL and QWEN_API_KEY were not found in process.env or the project .env file"
+    );
+    console.log(
+      "\nAdd the credentials to the project .env file or export them in your shell, then rerun npm run test:full."
+    );
     return;
   }
   
@@ -140,8 +125,14 @@ async function testPdfToMarkdown() {
   // Test 3: Full conversion - Image to Markdown
   console.log("\nTest 3: Convert image to markdown using Qwen VL API");
   try {
-    console.log("  Sending request to Qwen VL API...");
-    const markdown = await convertImageToMarkdown(imageBuffer, apiUrl, apiKey);
+    console.log("  Sending request to the OpenAI-compatible vision API...");
+    const markdown = await convertImageToMarkdown(
+      imageBuffer,
+      apiUrl,
+      apiKey,
+      modelName,
+      vllmReasoningParser
+    );
     
     if (!markdown || typeof markdown !== "string") {
       throw new Error("Expected markdown string but got: " + typeof markdown);

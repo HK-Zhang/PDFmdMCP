@@ -1,6 +1,6 @@
 {
   "name": "pdf-to-markdown-mcp",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "description": "MCP server that converts PDF pages to markdown using Qwen VL model",
   "type": "module",
   "main": "dist/src/index.js",
@@ -12,7 +12,7 @@
     "build": "tsc",
     "start": "node dist/src/index.js",
     "dev": "tsc --watch",
-    "test": "tsc && node dist/test/convertPdfPageToImage.test.js",
+    "test": "tsc && node dist/test/convertPdfPageToImage.test.js && node dist/test/openaiCompatibleRequest.test.js",
     "test:full": "tsc && node dist/test/pdfToMarkdown.test.js",
     "test:all": "npm test && npm run test:full",
     "demo": "tsc && node dist/test/demo.js"
@@ -28,11 +28,17 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",
     "canvas": "3.2.0",
-    "pdfjs-dist": "4.8.69"
+    "dotenv": "^16.6.1",
+    "pdfjs-dist": "4.8.69",
+    "zod": "^3.25.76"
   },
   "overrides": {
-    "hono":"4.12.5",
-    "ajv":"8.18.0"
+    "hono":"4.12.18",
+    "ajv":"8.18.0",
+    "fast-uri":"3.1.2",
+    "ip-address":"10.2.0",
+    "@hono/node-server":"1.19.14",
+    "path-to-regexp":"8.4.2"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

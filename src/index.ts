@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 
+import "dotenv/config";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { z } from "zod";
+import { buildOpenAICompatibleRequest } from "./openaiCompatibleRequest.js";
 import { convertPdfPageToImage } from "./pdfConverter.js";
 
 interface QwenVLResponse {
@@ -26,30 +28,12 @@ async function convertImageToMarkdown(
   imageBuffer: Buffer,
   apiUrl: string,
   apiKey: string,
-  modelName: string
+  modelName: string,
+  vllmReasoningParser?: string
 ): Promise<string> {
-  const base64Image = imageBuffer.toString("base64");
-
-  const requestBody = {
-    model: modelName,
-    messages: [
-      {
-        role: "user",
-        content: [
-          {
-            type: "image_url",
-            image_url: {
-              url: `data:image/png;base64,${base64Image}`,
-            },
-          },
-          {
-            type: "text",
-            text: "Please convert this image to markdown format. Extract all text, tables, and structure accurately.",
-          },
-        ],
-      },
-    ],
-  };
+  const requestBody = buildOpenAICompatibleRequest(imageBuffer, modelName, {
+    vllmReasoningParser,
+  });
 
   const response = await fetch(apiUrl, {
     method: "POST",
@@ -90,6 +74,7 @@ async function main() {
   const apiUrl = process.env.QWEN_API_URL;
   const apiKey = process.env.QWEN_API_KEY;
   const modelName = process.env.QWEN_MODEL || "Qwen3-VL-235B-A22B-Instruct";
+  const vllmReasoningParser = process.env.VLLM_REASONING_PARSER;
 
   if (!apiUrl || !apiKey) {
     throw new Error(
@@ -166,7 +151,8 @@ async function main() {
           imageBuffer,
           apiUrl,
           apiKey,
-          modelName
+          modelName,
+          vllmReasoningParser
         );
 
         return {

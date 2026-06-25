@@ -1,13 +1,21 @@
 #!/usr/bin/env node
 
 import "dotenv/config";
+import { config as loadEnvFile } from "dotenv";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import * as fs from "node:fs/promises";
+import * as os from "node:os";
 import * as path from "node:path";
 import { z } from "zod";
 import { buildOpenAICompatibleRequest } from "./openaiCompatibleRequest.js";
 import { convertPdfPageToImage } from "./pdfConverter.js";
+
+// Load additional env fallbacks. dotenv does not override keys already set,
+// so the resolution order is: real process env > project .env > ~/.pdfmd/.env > /root/.pdfmd/.env
+for (const envPath of [path.join(os.homedir(), ".pdfmd", ".env"), "/root/.pdfmd/.env"]) {
+  loadEnvFile({ path: envPath });
+}
 
 interface QwenVLResponse {
   choices?: Array<{

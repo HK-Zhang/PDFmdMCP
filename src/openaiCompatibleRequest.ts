@@ -45,7 +45,7 @@ function parseVllmReasoningParser(
   }
 
   throw new Error(
-    `Unsupported VLLM_REASONING_PARSER \"${vllmReasoningParser}\". Supported values: ${supportedVllmReasoningParsers.join(", ")}.`
+    `Unsupported VLLM_REASONING_PARSER "${vllmReasoningParser}". Supported values: ${supportedVllmReasoningParsers.join(", ")}.`
   );
 }
 
